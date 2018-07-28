@@ -1,0 +1,44 @@
+
+
+cook_book_dict = dict()
+cook_book_ingredients_list = list()
+
+with open("Cook_Book.txt", encoding="Windows-1251") as file_cook_book:
+    for line in file_cook_book:
+        #del cook_book_ingredients_list[:]
+        cook_book_ingredients_list = list()
+        dish_name = line.strip()  # имя блюда как ключ словаря
+        s = int(file_cook_book.readline().strip())  # строка содержаит в себе число ингредиентов блюда
+# перебираем ингредиенты и помещаем в наш словарь блюд
+        while s != 0:
+            string = file_cook_book.readline().strip()  # получаем ингредиент
+            arr_ingred = string.split("|")  # разбираем ингредиент на ед. измерения, названия, кол-во
+            cook_book_ingredients_list.append({"ingredient_name": arr_ingred[0].strip(), "quantity": arr_ingred[1].strip(), "measure": arr_ingred[2].strip()})
+
+            s = s - 1
+        # print(cook_book_ingredients_list)
+
+        cook_book_dict.update({dish_name: cook_book_ingredients_list})
+
+        file_cook_book.readline()
+
+dishes_for_person = input("Введите блюда через точку с запятой: ")
+person_count = int(input("Введите количество персон, на которых готовим: "))
+dishes = dishes_for_person.split(";")
+
+def get_shop_list_by_dishes(dishes, person_count):
+    ingredient_dictionary = dict()
+    for dish in dishes:
+        i = 0
+        while i < len(cook_book_dict[dish]):
+            ingredient_name = cook_book_dict[dish][i]["ingredient_name"]
+            ingredient_quantity = int(cook_book_dict[dish][i]["quantity"]) * person_count
+            ingredient_measure = cook_book_dict[dish][i]["measure"]
+            i += 1
+            # print(ingredient_name, ingredient_quantity, ingredient_measure)
+            ingredient_dictionary.update({ingredient_name: {"measure": ingredient_measure, "quantity": ingredient_quantity}})
+    print(ingredient_dictionary)
+
+    return ingredient_dictionary
+
+get_shop_list_by_dishes(dishes, person_count)
